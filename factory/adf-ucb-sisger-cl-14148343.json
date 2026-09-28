@@ -1,0 +1,15 @@
+{
+	"name": "adf-ucb-sisger-cl-14148343",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "chilecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "7ac5ef34-39aa-4caf-ba81-6cc792999d06",
+		"tenantId": "cc28633f-12b8-46cb-bc15-951dae239b4d"
+	}
+}
