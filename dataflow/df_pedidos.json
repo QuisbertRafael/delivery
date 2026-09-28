@@ -14,6 +14,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "pedidos_sql",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -52,8 +56,30 @@
 				"     disjoint: false) ~> split1@(Validos, Rechazados)",
 				"split1@Validos sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          pedido_id as string,",
+				"          fecha_pedido as date,",
+				"          hora_pedido as string,",
+				"          cliente_id as string,",
+				"          sucursal_id as string,",
+				"          canal as string,",
+				"          tipo_servicio as string,",
+				"          estado_pedido as string,",
+				"          promocion_id as string,",
+				"          subtotal as decimal(12,2),",
+				"          costo_delivery as decimal(12,2),",
+				"          descuento as decimal(12,2),",
+				"          impuesto as decimal(12,2),",
+				"          total_pedido as decimal(12,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}

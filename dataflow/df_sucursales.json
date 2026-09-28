@@ -14,6 +14,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "sucursales_sql",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -45,8 +49,24 @@
 				"     disjoint: false) ~> split1@(Validos, Rechazados)",
 				"split1@Validos sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          sucursal_id as string,",
+				"          restaurante_id as string,",
+				"          nombre_sucursal as string,",
+				"          ciudad as string,",
+				"          zona as string,",
+				"          direccion as string,",
+				"          capacidad_mesas as integer,",
+				"          tiene_delivery as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
