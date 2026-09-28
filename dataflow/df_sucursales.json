@@ -1,0 +1,53 @@
+{
+	"name": "df_sucursales",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sucursales_csv",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          sucursal_id as string,",
+				"          restaurante_id as string,",
+				"          nombre_sucursal as string,",
+				"          ciudad as string,",
+				"          zona as string,",
+				"          direccion as string,",
+				"          capacidad_mesas as string,",
+				"          tiene_delivery as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(nombre_sucursal = trim(nombre_sucursal),",
+				"          ciudad = case(ciudad == 'SCZ', 'Santa Cruz de la Sierra', ciudad == 'CBA', 'Cochabamba', ciudad)) ~> derivedColumn1",
+				"derivedColumn1 split(!isNull(sucursal_id) && !isNull(restaurante_id) && !isNull(nombre_sucursal) && nombre_sucursal != '',",
+				"     disjoint: false) ~> split1@(Validos, Rechazados)",
+				"split1@Validos sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

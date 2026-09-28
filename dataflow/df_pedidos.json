@@ -1,0 +1,60 @@
+{
+	"name": "df_pedidos",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "pedidos_csv",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          pedido_id as string,",
+				"          fecha_pedido as string,",
+				"          hora_pedido as string,",
+				"          cliente_id as string,",
+				"          sucursal_id as string,",
+				"          canal as string,",
+				"          tipo_servicio as string,",
+				"          estado_pedido as string,",
+				"          promocion_id as string,",
+				"          subtotal as string,",
+				"          costo_delivery as string,",
+				"          descuento as string,",
+				"          impuesto as string,",
+				"          total_pedido as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(canal = trim(canal),",
+				"          estado_pedido = trim(estado_pedido),",
+				"          promocion_id = iif(isNull(promocion_id) || trim(promocion_id) == '', toString(null()), trim(promocion_id))) ~> derivedColumn1",
+				"derivedColumn1 split(!isNull(pedido_id) && !isNull(cliente_id) && !isNull(sucursal_id),",
+				"     disjoint: false) ~> split1@(Validos, Rechazados)",
+				"split1@Validos sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
